@@ -1,4 +1,6 @@
 import dotenv from 'dotenv'
+import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
@@ -21,4 +23,10 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use('/api/posts', postRoutes)
 app.use('/api/users', usersRoutes)
-app.use('/', (req, res) => res.send('APP IS RUNNING'))
+// app.use('/', (req, res) => res.send('APP IS RUNNING'))
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use('/', express.static(path.join(__dirname, './client/build')))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, './client/build/index.html'))
+})
